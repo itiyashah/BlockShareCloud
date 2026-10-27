@@ -1,22 +1,44 @@
-import ipfshttpclient
 import os
+import requests
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class IPFSClient:
     def __init__(self):
-        # Connect to local IPFS daemon
-        self.client = ipfshttpclient.connect('/ip4/127.0.0.1/tcp/5001')
+        self.api_key = os.getenv("PINATA_API_KEY")
+        self.secret_key = os.getenv("PINATA_SECRET_API_KEY")
+        self.pinata_endpoint = "https://api.pinata.cloud/pinning/pinFileToIPFS"
 
     def upload_file(self, file_path):
-        res = self.client.add(file_path)
-        return res['Hash']  # Return the IPFS hash
+        # If Pinata keys are provided, upload to Pinata Enterprise Cloud
+        if self.api_key and self.secret_key:
+            headers = {
+                "pinata_api_key": self.api_key,
+                "pinata_secret_api_key": self.secret_key
+            }
+            with open(file_path, "rb") as file_data:
+                response = requests.post(
+                    self.pinata_endpoint,
+                    files={"file": file_data},
+                    headers=headers
+                )
+            if response.status_code == 200:
+                return response.json()["IpfsHash"]
+        
+        # Fallback message or exception if cloud keys are missing
+        raise Exception("Pinata API keys not configured or upload failed.")
 
     def download_file(self, ipfs_hash, download_folder):
-        # Create the download folder if it doesn't exist
         if not os.path.exists(download_folder):
             os.makedirs(download_folder)
-
-        # Download the file from IPFS and save it in the download_folder
-        self.client.get(ipfs_hash, target=download_folder)
         
-        # Return the path of the downloaded file
-        return os.path.join(download_folder, ipfs_hash)
+        # Public gateway download URL for enterprise retrieval
+        gateway_url = f"https://gateway.pinata.cloud/ipfs/{ipfs_hash}"
+        response = requests.get(gateway_url)
+        
+        file_path = os.path.join(download_folder, ipfs_hash)
+        with open(file_path, "wb") as f:
+            f.write(response.content)
+            
+        return file_path

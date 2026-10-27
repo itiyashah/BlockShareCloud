@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - BlockShareCloud</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
+    <style>
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            color: white;
+            font-size: 13px;
+            font-family: sans-serif;
+        }
+
+        th,
+        td {
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background: rgba(0, 119, 182, 0.4);
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .alert-success {
+            color: #00f5d4;
+            margin: 10px 0;
+        }
+
+        .alert-danger {
+            color: #ff4d6d;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="background"></div>
+    <div class="container" style="max-width: 800px;">
+        <div class="dashboard-header">
+            <h2 style="margin: 0; font-size: 18px; color: #fff;">Welcome, {{ user }}</h2>
+            <a href="{{ url_for('logout') }}" class="btn"
+                style="background: #ff4d6d; text-decoration: none; padding: 6px 14px; font-size: 13px;">Logout</a>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <ul style="list-style: none; padding: 0; text-align: center;">
+            {% for category, message in messages %}
+            <li class="alert-{{ category }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+
+        <div class="upload-section">
+            <h2>Upload to Enterprise Cloud</h2>
+            <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
+                <input type="file" name="file" class="file-input" required>
+                <input type="submit" value="Upload File" class="btn">
+            </form>
+        </div>
+
+        <div style="margin-top: 30px;">
+            <h2>Your Uploaded Files</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Filename</th>
+                        <th>IPFS Hash</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for file in files %}
+                    <tr>
+                        <td>{{ file.filename }}</td>
+                        <td><code>{{ file.ipfs_hash }}</code></td>
+                        <td><a href="https://gateway.pinata.cloud/ipfs/{{ file.ipfs_hash }}" target="_blank"
+                                style="color: #00f5d4; text-decoration: none;">Download / View</a></td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="3"
+                            style="text-align: center; color: #a0c4ff; font-family: 'Orbitron', sans-serif;">No files
+                            uploaded yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>

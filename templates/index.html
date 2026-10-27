@@ -1,17 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BlockShareCloud</title>
-    <link rel="stylesheet" href="/static/styles.css"> 
+    <link rel="stylesheet" href="/static/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
 </head>
+
 <body>
-    <div class="background"></div> 
+    <div class="background"></div>
     <div class="container">
         <h1>BlockShareCloud</h1>
-        
+        <p
+            style="text-align: center; color: #a0c4ff; margin-bottom: 20px; font-family: 'Orbitron', sans-serif; font-size: 14px;">
+            Enterprise Decentralized Storage</p>
+
+        <div style="text-align: center; margin-bottom: 25px;">
+            <a href="{{ url_for('login') }}" class="btn"
+                style="text-decoration: none; display: inline-block; margin-right: 10px;">Login</a>
+            <a href="{{ url_for('register') }}" class="btn"
+                style="text-decoration: none; display: inline-block; background: #00b4d8;">Register</a>
+        </div>
+
         <div class="upload-section">
             <h2>Upload a File</h2>
             <form action="/upload" method="post" enctype="multipart/form-data">
@@ -20,7 +32,7 @@
             </form>
         </div>
 
-        <div class="download-section">
+        <div class="download-section" style="margin-top: 20px;">
             <h2>Download a File</h2>
             <form action="/download" method="post">
                 <input type="text" name="ipfs_hash" placeholder="Enter IPFS Hash" class="input-text" required>
@@ -29,4 +41,5 @@
         </div>
     </div>
 </body>
+
 </html>
