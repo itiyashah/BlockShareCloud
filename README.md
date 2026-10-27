@@ -1,5 +1,7 @@
 # BlockShareCloud : Blockchain-Based Decentralized Cloud Storage System
 
+https://app.pinata.cloud/ipfs/files
+
 This project implements a simple decentralized cloud file sharing system using Flask, IPFS, and Blockchain technology. Users can upload files, which are stored securely on IPFS with metadata recorded on a blockchain for traceability.
 
 ## Setup
